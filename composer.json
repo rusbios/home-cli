@@ -1,8 +1,8 @@
 {
-  "name": "rusbios/home_cli",
+  "name": "rusbios/home-cli",
   "description": "Управление домашним сервером",
   "minimum-stability": "stable",
-  "license": "proprietary",
+  "license": "Apache-2.0",
   "version": "0.0.1",
   "authors": [
     {
