@@ -3,8 +3,10 @@ declare(strict_types = 1);
 
 namespace RB\HomeCli\Commands;
 
+use Exception;
 use RB\HomeCli\Config;
 use RB\HomeCli\Services\ChatBot;
+use Services\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -42,7 +44,7 @@ class ListenTelegram extends CommandAbstract
         }
 
         $telegramBot = new BotApi($config->get('telegram.token'));
-        $chatBot = new ChatBot($telegramBot, $config);
+        $chatBot = new ChatBot($telegramBot, $config, new Logger('telegram'));
 
         $last = $config->get('telegram.update.last', 0);
 
@@ -51,6 +53,7 @@ class ListenTelegram extends CommandAbstract
                 foreach ($telegramBot->getUpdates($last) as $update) {
                     $message = $update->getMessage() ?? $update->getEditedMessage();
                     $output->writeln('send message: ' . $message->getText());
+
                     $answerMessage = $chatBot->run(
                         $message->getText(),
                         $message->getChat()->getUsername()
@@ -63,7 +66,7 @@ class ListenTelegram extends CommandAbstract
 
                     $last = $update->getUpdateId() + 1;
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $output->writeln($e->getMessage());
             }
 

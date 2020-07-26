@@ -2,3 +2,4 @@ vendor
 composer.lock
 .idea
 src/configs/configs.json
+logs

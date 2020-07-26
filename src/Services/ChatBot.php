@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace RB\HomeCli\Services;
 
+use Psr\Log\LoggerInterface;
 use RB\HomeCli\Config;
 use TelegramBot\Api\BotApi;
 use TelegramBot\Api\Exception;
@@ -31,6 +32,7 @@ class ChatBot
 
     private BotApi $botApi;
     private Config $config;
+    private LoggerInterface $logger;
     private string $accessPas;
     private array $accessLogins;
     private string $glue = '
@@ -40,24 +42,28 @@ class ChatBot
      * ChatBot constructor.
      * @param BotApi $botApi
      * @param Config $config
+     * @param LoggerInterface $logger
      */
-    public function __construct(BotApi $botApi, Config $config)
+    public function __construct(BotApi $botApi, Config $config, LoggerInterface $logger)
     {
         $this->botApi = $botApi;
         $this->accessPas = (string)$config->get('telegram.accessPas', 1);
         $this->accessLogins = (array)$config->get('telegram.accessUsers', []);
         $this->config = $config;
+        $this->logger = $logger;
     }
 
     /**
      * @param string $message
-     * @param string $userName
+     * @param string|null $userName
      * @return string
      * @throws Exception
      * @throws InvalidArgumentException
      */
-    public function run(string $message, string $userName): string
+    public function run(string $message, string $userName = null): string
     {
+        $this->logger->info(($userName ?? 'guest') . ':' . $message);
+
         if (substr($message, 0, 1) != '/') {
             return 'skip';
         }
@@ -67,9 +73,9 @@ class ChatBot
         $command = mb_strtolower($command);
         $param = trim(str_replace($command, '', $message));
 
-        $this->history[$userName][] = $message;
+        $this->history[$userName ?? 'guest'][] = $message;
 
-        if (!in_array($userName, $this->accessLogins)) {
+        if ($userName && !in_array($userName, $this->accessLogins)) {
             if ($command == self::COMMAND_REG) {
                 if ($this->accessPas == $param) {
                     $this->addAccess($userName);

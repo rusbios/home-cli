@@ -30,7 +30,7 @@ class ListCommands extends CommandAbstract
         $table->setHeaders(['Команда', 'Описание']);
 
         foreach ($commands as $command) {
-            $class = 'HomeCli\\Commands\\' . substr($command, 0, -4);
+            $class = 'RB\\HomeCli\\Commands\\' . substr($command, 0, -4);
 
             if (class_exists($class) && $class::$commandName) {
                 /** @var CommandAbstract $cli */
