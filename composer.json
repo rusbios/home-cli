@@ -12,7 +12,9 @@
   ],
   "require": {
     "symfony/console": "^5.1",
-    "ext-json": "*"
+    "rusbios/transport": "^0.1",
+    "ext-json": "*",
+    "telegram-bot/api": "^2.3"
   },
   "autoload": {
     "psr-4": {
