@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace HomeCli;
+namespace RB\HomeCli;
 
 class Config
 {

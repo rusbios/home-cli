@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace HomeCli\Commands;
+namespace RB\HomeCli\Commands;
 
-use HomeCli\Config;
+use RB\HomeCli\Config;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

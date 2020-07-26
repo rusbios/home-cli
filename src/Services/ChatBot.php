@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace HomeCli\Services;
+namespace RB\HomeCli\Services;
 
-use HomeCli\Config;
+use RB\HomeCli\Config;
 use TelegramBot\Api\BotApi;
 use TelegramBot\Api\Exception;
 use TelegramBot\Api\InvalidArgumentException;

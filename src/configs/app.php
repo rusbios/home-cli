@@ -9,5 +9,6 @@ return [
 
     'telegram' => [
         'token' => null,
+        'accessPas' => 'admin',
     ],
 ];

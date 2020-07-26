@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-use HomeCli\Run;
+use RB\HomeCli\Run;
 
 require_once __DIR__ . '/../src/Run.php';
 

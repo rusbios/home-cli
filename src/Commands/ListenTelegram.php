@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace HomeCli\Commands;
+namespace RB\HomeCli\Commands;
 
-use HomeCli\Config;
-use HomeCli\Services\ChatBot;
+use RB\HomeCli\Config;
+use RB\HomeCli\Services\ChatBot;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

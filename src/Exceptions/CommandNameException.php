@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace HomeCli\Exceptions;
+namespace RB\HomeCli\Exceptions;
 
 use Exception;
 

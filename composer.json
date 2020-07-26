@@ -3,7 +3,7 @@
   "description": "Управление домашним сервером",
   "minimum-stability": "stable",
   "license": "Apache-2.0",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "authors": [
     {
       "name": "Ryssia",
@@ -12,13 +12,12 @@
   ],
   "require": {
     "symfony/console": "^5.1",
-    "rusbios/transport": "^0.1",
-    "ext-json": "*",
-    "telegram-bot/api": "^2.3"
+    "telegram-bot/api": "^2.3",
+    "ext-json": "*"
   },
   "autoload": {
     "psr-4": {
-      "HomeCli\\": "src/"
+      "RB\\HomeCli\\": "src/"
     }
   }
 }

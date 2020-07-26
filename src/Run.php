@@ -1,13 +1,11 @@
 <?php
 declare(strict_types = 1);
 
-namespace HomeCli;
+namespace RB\HomeCli;
 
-use HomeCli\Commands\CommandAbstract;
-use HomeCli\Exceptions\CommandNameException;
-use Symfony\Component\Console\Command\HelpCommand;
+use RB\HomeCli\Commands\CommandAbstract;
+use RB\HomeCli\Exceptions\CommandNameException;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Run
@@ -46,7 +44,7 @@ class Run
 
         foreach ($commandFiles as $fileName) {
             /** @var CommandAbstract $class */
-            $class = 'HomeCli\\Commands\\' . substr($fileName, 0, -4);
+            $class = 'RB\\HomeCli\\Commands\\' . substr($fileName, 0, -4);
 
             if (class_exists($class) && $class::$commandName == $commandName) {
                 return (string)$class;
