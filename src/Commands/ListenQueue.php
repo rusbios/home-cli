@@ -5,10 +5,12 @@ namespace RB\HomeCli\Commands;
 
 use Exception;
 use Symfony\Component\Console\Input\{InputInterface, InputOption};
+use RB\DB\Builder\DB;
+use RB\DB\Builder\PDOConnect;
 use RB\HomeCli\Config;
 use RB\HomeCli\Models\FileQueueModel;
-use RB\Transport\DB;
-use RB\Transport\Db\Client;
+use RB\HomeCli\Services\DownloadFile;
+use RB\HomeCli\Services\UploadFile;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ListenQueue extends CommandAbstract
@@ -30,9 +32,16 @@ class ListenQueue extends CommandAbstract
     {
         $this->createConnectDB($input);
 
-        $filesDown = FileQueueModel::getDownList();
+        while (true) {
+            foreach (FileQueueModel::getDownList() as $file) {
+                (new DownloadFile($file))->processing();
+            }
 
-        $filesUp = FileQueueModel::getUpList();
+            foreach (FileQueueModel::getUpList() as $file) {
+                (new UploadFile($file))->processing();
+            }
+            sleep(1);
+        }
 
         return parent::execute($input, $output);
     }
@@ -60,7 +69,7 @@ class ListenQueue extends CommandAbstract
             throw new Exception('DB config not found');
         }
 
-        $connect = new Client(
+        $connect = new PDOConnect(
             $config->get('queueDB.type'),
             $config->get('queueDB.host'),
             $config->get('queueDB.dbname'),

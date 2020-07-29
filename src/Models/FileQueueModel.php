@@ -3,7 +3,9 @@ declare(strict_types = 1);
 
 namespace RB\HomeCli\Models;
 
-use RB\Transport\Db\Model;
+use DateTime;
+use RB\DB\Exceptions\OperatorException;
+use RB\DB\Model;
 
 /**
  * Class QueueModel
@@ -14,8 +16,8 @@ use RB\Transport\Db\Model;
  * @property int $file_id
  * @property int $status
  * @property int $attempts
- * @property string $created_ts //todo datetime
- * @property string $updated_ts
+ * @property DateTime $created_ts
+ * @property DateTime $updated_ts
  */
 class FileQueueModel extends Model
 {
@@ -47,23 +49,25 @@ class FileQueueModel extends Model
 
     /**
      * @return FileQueueModel[]
+     * @throws OperatorException
      */
     public static function getDownList(): iterable
     {
         return FileQueueModel::select([
             'loading' => FileQueueModel::LOADING_DOWN,
             'status' => FileQueueModel::STATUS_NEW,
-        ], [], 0, 10);
+        ],0, 10);
     }
 
     /**
      * @return FileQueueModel[]
+     * @throws OperatorException
      */
     public static function getUpList(): iterable
     {
         return FileQueueModel::select([
             'loading' => FileQueueModel::LOADING_UP,
             'status' => FileQueueModel::STATUS_NEW,
-        ], [], 0, 10);
+        ], 0, 10);
     }
 }
