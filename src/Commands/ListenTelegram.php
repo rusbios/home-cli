@@ -1,11 +1,11 @@
 <?php
 declare(strict_types = 1);
 
-namespace RB\HomeCli\Commands;
+namespace RB\Cli\Commands;
 
 use Exception;
-use RB\HomeCli\Config;
-use RB\HomeCli\Services\ChatBot;
+use RB\Cli\Config;
+use RB\Cli\Services\ChatBot;
 use Services\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

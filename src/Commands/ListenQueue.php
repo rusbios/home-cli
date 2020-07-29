@@ -1,16 +1,16 @@
 <?php
 declare(strict_types = 1);
 
-namespace RB\HomeCli\Commands;
+namespace RB\Cli\Commands;
 
 use Exception;
 use Symfony\Component\Console\Input\{InputInterface, InputOption};
 use RB\DB\Builder\DB;
 use RB\DB\Builder\PDOConnect;
-use RB\HomeCli\Config;
-use RB\HomeCli\Models\FileQueueModel;
-use RB\HomeCli\Services\DownloadFile;
-use RB\HomeCli\Services\UploadFile;
+use RB\Cli\Config;
+use RB\Cli\Models\FileQueueModel;
+use RB\Cli\Services\DownloadFile;
+use RB\Cli\Services\UploadFile;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ListenQueue extends CommandAbstract

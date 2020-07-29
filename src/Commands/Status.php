@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace RB\HomeCli\Commands;
+namespace RB\Cli\Commands;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

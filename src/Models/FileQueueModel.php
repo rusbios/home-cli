@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace RB\HomeCli\Models;
+namespace RB\Cli\Models;
 
 use DateTime;
 use RB\DB\Exceptions\OperatorException;
@@ -9,7 +9,7 @@ use RB\DB\Model;
 
 /**
  * Class QueueModel
- * @package RB\HomeCli\Models
+ * @package RB\Cli\Models
  *
  * @property int $id
  * @property int $loading

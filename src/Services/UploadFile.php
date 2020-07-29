@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace RB\HomeCli\Services;
+namespace RB\Cli\Services;
 
-use RB\HomeCli\Models\FileQueueModel;
+use RB\Cli\Models\FileQueueModel;
 
 class UploadFile
 {

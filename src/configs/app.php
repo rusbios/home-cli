@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'name' => 'HomeCli',
+    'name' => 'Cli',
 
     'cli' => [
         'name' => 'Vasya',

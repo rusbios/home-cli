@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace RB\HomeCli\Commands;
+namespace RB\Cli\Commands;
 
-use RB\HomeCli\Config;
+use RB\Cli\Config;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,7 +30,7 @@ class ListCommands extends CommandAbstract
         $table->setHeaders(['Команда', 'Описание']);
 
         foreach ($commands as $command) {
-            $class = 'RB\\HomeCli\\Commands\\' . substr($command, 0, -4);
+            $class = 'RB\\Cli\\Commands\\' . substr($command, 0, -4);
 
             if (class_exists($class) && $class::$commandName) {
                 /** @var CommandAbstract $cli */

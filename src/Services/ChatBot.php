@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace RB\HomeCli\Services;
+namespace RB\Cli\Services;
 
 use Psr\Log\LoggerInterface;
-use RB\HomeCli\Config;
+use RB\Cli\Config;
 use TelegramBot\Api\BotApi;
 use TelegramBot\Api\Exception;
 use TelegramBot\Api\InvalidArgumentException;
