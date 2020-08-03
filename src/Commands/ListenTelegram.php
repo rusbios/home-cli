@@ -6,7 +6,7 @@ namespace RB\Cli\Commands;
 use Exception;
 use RB\Cli\Config;
 use RB\Cli\Services\ChatBot;
-use Services\Logger;
+use RB\Cli\Services\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

@@ -13,7 +13,7 @@ use RB\DB\Model;
  *
  * @property int $id
  * @property int $loading
- * @property int $file_id
+ * @property string $file_path
  * @property int $status
  * @property int $attempts
  * @property DateTime $created_ts
@@ -48,26 +48,28 @@ class FileQueueModel extends Model
     protected string $table = 'files_queue';
 
     /**
+     * @param int|null $limit
      * @return FileQueueModel[]
      * @throws OperatorException
      */
-    public static function getDownList(): iterable
+    public static function getDownList(int $limit = null): iterable
     {
         return FileQueueModel::select([
             'loading' => FileQueueModel::LOADING_DOWN,
             'status' => FileQueueModel::STATUS_NEW,
-        ],0, 10);
+        ],0, $limit);
     }
 
     /**
+     * @param int|null $limit
      * @return FileQueueModel[]
      * @throws OperatorException
      */
-    public static function getUpList(): iterable
+    public static function getUpList(int $limit = null): iterable
     {
         return FileQueueModel::select([
             'loading' => FileQueueModel::LOADING_UP,
             'status' => FileQueueModel::STATUS_NEW,
-        ], 0, 10);
+        ], 0, $limit);
     }
 }

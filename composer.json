@@ -20,7 +20,8 @@
     "ext-json": "*",
     "ext-curl": "*",
     "ext-http": "*",
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "ext-pcntl": "*"
   },
   "autoload": {
     "psr-4": {

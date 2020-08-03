@@ -1,6 +1,6 @@
 <?php
 
-namespace Services;
+namespace RB\Cli\Services;
 
 use Exception;
 use Psr\Log\AbstractLogger;
