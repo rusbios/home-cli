@@ -85,7 +85,7 @@ class ListenQueue extends CommandAbstract
         $saveConfig = false;
         foreach (['type', 'host', 'port', 'dbname', 'user', 'password'] as $param) {
             if ($input->getOption($param)) {
-                $config->set('queue.bd.'.$param, $input->getOption($param));
+                $config->set('queue.db.'.$param, $input->getOption($param));
                 $saveConfig = true;
             }
         }
@@ -121,7 +121,7 @@ class ListenQueue extends CommandAbstract
 
         $saveConfig = false;
         foreach (['host', 'port', 'login', 'password', 'ssl'] as $param) {
-            if ($input->getOption($param)) {
+            if ($input->getOption("ftp_$param")) {
                 $config->set('queue.ftp.'.$param, $input->getOption("ftp_$param"));
                 $saveConfig = true;
             }
@@ -137,7 +137,7 @@ class ListenQueue extends CommandAbstract
         return new FtpClient(
             $config->get('queue.ftp.host'),
             $config->get('queue.ftp.login'),
-            $config->get('queue.ftp.pass'),
+            $config->get('queue.ftp.password'),
             (int)$config->get('queue.ftp.port', 21),
             (int)$config->get('queue.ftp.timeout', 90),
             (bool)$config->get('queue.ftp.ssl', false)
