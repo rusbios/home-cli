@@ -31,23 +31,26 @@ class ListenQueue extends CommandAbstract
         $this->addOption('user', 'u', InputOption::VALUE_OPTIONAL, 'login базы данных');
         $this->addOption('password', 'p', InputOption::VALUE_OPTIONAL, 'password базы данных');
 
-        $this->addOption('ftp_type', null, InputOption::VALUE_OPTIONAL, 'ftp или ftps');
+        $this->addOption('ftp_ssl', null, InputOption::VALUE_OPTIONAL, 'ftps соединения');
         $this->addOption('ftp_host', null, InputOption::VALUE_OPTIONAL, 'Хост ftp соединения');
         $this->addOption('ftp_port', null, InputOption::VALUE_OPTIONAL, 'Порт ftp соединения');
         $this->addOption('ftp_login', null, InputOption::VALUE_OPTIONAL, 'login ftp соединения');
-        $this->addOption('ftp_pass', null, InputOption::VALUE_OPTIONAL, 'password ftp соединения');
+        $this->addOption('ftp_password', null, InputOption::VALUE_OPTIONAL, 'password ftp соединения');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->createConnectDB($input);
 
-        $ftpConnect = $this->createConnectFtp($input);
-
-        $fileService = new FileService($ftpConnect, new Logger('queue_files'));
+        $fileService = new FileService($this->createConnectFtp($input), new Logger('queue_files'));
 
         while (true) {
-            $countProcess = $ftpConnect->countActiveProcess();
+            $countProcess = $fileService->countActiveProcess();
 
             if ($countProcess >= self::MAX_PROCESS) {
                 continue;
@@ -82,7 +85,7 @@ class ListenQueue extends CommandAbstract
         $saveConfig = false;
         foreach (['type', 'host', 'port', 'dbname', 'user', 'password'] as $param) {
             if ($input->getOption($param)) {
-                $config->set('queueDB.'.$param, $input->getOption($param));
+                $config->set('queue.bd.'.$param, $input->getOption($param));
                 $saveConfig = true;
             }
         }
@@ -90,17 +93,17 @@ class ListenQueue extends CommandAbstract
             $config->save();
         }
 
-        if (!$config->get('queueDB.dbname')) {
+        if (!$config->get('queue.db.dbname')) {
             throw new ConnectException('DB config not found');
         }
 
         $connect = new PDOConnect(
-            $config->get('queueDB.type'),
-            $config->get('queueDB.host'),
-            $config->get('queueDB.dbname'),
-            $config->get('queueDB.user'),
-            $config->get('queueDB.password'),
-            $config->get('queueDB.port')
+            $config->get('queue.db.type'),
+            $config->get('queue.db.host'),
+            $config->get('queue.db.dbname'),
+            $config->get('queue.db.user'),
+            $config->get('queue.db.password'),
+            $config->get('queue.db.port')
         );
 
         DB::setConnect($connect);
@@ -117,9 +120,9 @@ class ListenQueue extends CommandAbstract
         $config = Config::create();
 
         $saveConfig = false;
-        foreach (['ftp_type', 'ftp_host', 'ftp_port', 'ftp_login', 'ftp_pass'] as $param) {
+        foreach (['host', 'port', 'login', 'password', 'ssl'] as $param) {
             if ($input->getOption($param)) {
-                $config->set('queueFtp.'.$param, $input->getOption($param));
+                $config->set('queue.ftp.'.$param, $input->getOption("ftp_$param"));
                 $saveConfig = true;
             }
         }
@@ -127,17 +130,17 @@ class ListenQueue extends CommandAbstract
             $config->save();
         }
 
-        if (!$config->get('queueFtp.ftp_host')) {
+        if (!$config->get('queue.ftp.host')) {
             throw new ConnectException('FTP config not found');
         }
 
         return new FtpClient(
-            $config->get('queueFtp.ftp_host'),
-            $config->get('queueFtp.ftp_login'),
-            $config->get('queueFtp.ftp_pass'),
-            $config->get('queueFtp.ftp_port', 21),
-            $config->get('queueFtp.ftp_timeout', 90),
-            $config->get('queueFtp.ftp_type', 'ftp') == 'ftps'
+            $config->get('queue.ftp.host'),
+            $config->get('queue.ftp.login'),
+            $config->get('queue.ftp.pass'),
+            (int)$config->get('queue.ftp.port', 21),
+            (int)$config->get('queue.ftp.timeout', 90),
+            (bool)$config->get('queue.ftp.ssl', false)
         );
     }
 }

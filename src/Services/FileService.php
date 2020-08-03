@@ -15,6 +15,8 @@ class FileService
     protected FtpClient $ftpClient;
     protected LoggerInterface $logger;
 
+    private array $process = [];
+
     /**
      * FileService constructor.
      * @param FtpClient $ftpClient
@@ -38,15 +40,15 @@ class FileService
         if ($pid == -1) {
             throw new AsyncException('Failed to spawn child process');
         } elseif ($pid) {
-            $fileQueue->status =  FileQueueModel::STATUS_PROGRESS;
+            $this->process[$pid] = $fileQueue->status = FileQueueModel::STATUS_PROGRESS;
             ++$fileQueue->attempts;
             $fileQueue->save();
 
             try {
                 $this->ftpClient->down($fileQueue->file_path);
-                $fileQueue->status = FileQueueModel::STATUS_DONE;
+                $this->process[$pid] = $fileQueue->status = FileQueueModel::STATUS_DONE;
             } catch (Exception $e) {
-                $fileQueue->status = FileQueueModel::STATUS_ERROR;
+                $this->process[$pid] = $fileQueue->status = FileQueueModel::STATUS_ERROR;
                 $this->logger->error($e->getMessage(), [
                     'queue_id' => $fileQueue->id,
                     'path' => $fileQueue->file_path,
@@ -70,15 +72,15 @@ class FileService
         if ($pid == -1) {
             throw new AsyncException('Failed to spawn child process');
         } elseif ($pid) {
-            $fileQueue->status =  FileQueueModel::STATUS_PROGRESS;
+            $this->process[$pid] = $fileQueue->status = FileQueueModel::STATUS_PROGRESS;
             ++$fileQueue->attempts;
             $fileQueue->save();
 
             try {
                 $this->ftpClient->up($fileQueue->file_path);
-                $fileQueue->status = FileQueueModel::STATUS_DONE;
+                $this->process[$pid] = $fileQueue->status = FileQueueModel::STATUS_DONE;
             } catch (Exception $e) {
-                $fileQueue->status = FileQueueModel::STATUS_ERROR;
+                $this->process[$pid] = $fileQueue->status = FileQueueModel::STATUS_ERROR;
                 $this->logger->error($e->getMessage(), [
                     'queue_id' => $fileQueue->id,
                     'path' => $fileQueue->file_path,
@@ -88,5 +90,21 @@ class FileService
 
             $fileQueue->save();
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function countActiveProcess(): int
+    {
+        $count = 0;
+
+        foreach ($this->process as $status) {
+            if ($status === FileQueueModel::STATUS_PROGRESS) {
+                ++$count;
+            }
+        }
+
+        return $count;
     }
 }
