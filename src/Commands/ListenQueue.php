@@ -10,7 +10,7 @@ use RB\Cli\Config;
 use RB\Cli\Models\FileQueueModel;
 use RB\Cli\Services\{FileService, Logger};
 use RB\DB\Builder\DB;
-use RB\DB\Connects\PDOConnect;
+use RB\DB\Connects\MySQLConnect;
 use RB\Transport\Exceptions\ConnectException as TransportConnectException;
 use RB\Transport\FtpClient;
 
@@ -97,14 +97,15 @@ class ListenQueue extends CommandAbstract
             throw new ConnectException('DB config not found');
         }
 
-        $connect = new PDOConnect(
-            $config->get('queue.db.type'),
-            $config->get('queue.db.host'),
-            $config->get('queue.db.dbname'),
-            $config->get('queue.db.user'),
-            $config->get('queue.db.password'),
-            $config->get('queue.db.port')
-        );
+        if ($config->get('queue.db.type') == 'mysql') {
+            $connect = new MySQLConnect(
+                $config->get('queue.db.host'),
+                $config->get('queue.db.dbname'),
+                $config->get('queue.db.user'),
+                $config->get('queue.db.password'),
+                $config->get('queue.db.port')
+            );
+        }
 
         DB::setConnect($connect);
     }

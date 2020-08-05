@@ -7,8 +7,9 @@ use Migrations\FileQueue;
 use RB\Cli\Config;
 use RB\Cli\Exceptions\ConnectException;
 use RB\DB\Builder\DB;
+use RB\DB\Builder\QueryBuilder;
 use RB\DB\Connects\DBConnetcInterface;
-use RB\DB\Connects\PDOConnect;
+use RB\DB\Connects\MySQLConnect;
 use RB\DB\Migrate\Run;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,9 +26,9 @@ class Migrate extends CommandAbstract
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $db = $this->createConnectDB();
-
+        DB::setConnect($db);
+        QueryBuilder::setConnect($db);
         Run::add(FileQueue::class);
-
         Run::applay($db);
 
         return parent::execute($input, $output);
@@ -45,13 +46,14 @@ class Migrate extends CommandAbstract
             throw new ConnectException('DB config not found');
         }
 
-        return new PDOConnect(
-            $config->get('queue.db.type'),
-            $config->get('queue.db.host'),
-            $config->get('queue.db.dbname'),
-            $config->get('queue.db.user'),
-            $config->get('queue.db.password'),
-            $config->get('queue.db.port')
-        );
+        if ($config->get('queue.db.type') == 'mysql') {
+            return new MySQLConnect(
+                $config->get('queue.db.host'),
+                $config->get('queue.db.dbname'),
+                $config->get('queue.db.user'),
+                $config->get('queue.db.password'),
+                $config->get('queue.db.port')
+            );
+        }
     }
 }
