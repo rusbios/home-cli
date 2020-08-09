@@ -6,10 +6,8 @@ namespace RB\Cli\Commands;
 use Migrations\FileQueue;
 use RB\Cli\Config;
 use RB\Cli\Exceptions\ConnectException;
-use RB\DB\Builder\DB;
-use RB\DB\Builder\QueryBuilder;
-use RB\DB\Connects\DBConnetcInterface;
-use RB\DB\Connects\MySQLConnect;
+use RB\DB\DBConnect;
+use RB\DB\Exceptions\ConnectException as DBConnectException;
 use RB\DB\Migrate\Run;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,20 +23,17 @@ class Migrate extends CommandAbstract
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $db = $this->createConnectDB();
-        DB::setConnect($db);
-        QueryBuilder::setConnect($db);
+        $this->createConnectDB();
         Run::add(FileQueue::class);
-        Run::applay($db);
 
         return parent::execute($input, $output);
     }
 
     /**
-     * @return DBConnetcInterface
      * @throws ConnectException
+     * @throws DBConnectException
      */
-    protected function createConnectDB(): DBConnetcInterface
+    protected function createConnectDB(): void
     {
         $config = Config::create();
 
@@ -46,14 +41,13 @@ class Migrate extends CommandAbstract
             throw new ConnectException('DB config not found');
         }
 
-        if ($config->get('queue.db.type') == 'mysql') {
-            return new MySQLConnect(
-                $config->get('queue.db.host'),
-                $config->get('queue.db.dbname'),
-                $config->get('queue.db.user'),
-                $config->get('queue.db.password'),
-                $config->get('queue.db.port')
-            );
-        }
+        DBConnect::created($config->get('queue.db.type'), 'default', [
+            'host' => $config->get('queue.db.host'),
+            'dbName' => $config->get('queue.db.dbname'),
+            'user' => $config->get('queue.db.user'),
+            'password' => $config->get('queue.db.password'),
+            'port' => $config->get('queue.db.port'),
+            'path' => $config->get('queue.db.path'), // todo add config
+        ]);
     }
 }

@@ -4,13 +4,13 @@ declare(strict_types = 1);
 namespace RB\Cli\Commands;
 
 use Symfony\Component\Console\Input\{InputInterface, InputOption};
+use RB\DB\DBConnect;
+use RB\DB\Exceptions\ConnectException as DBConnectException;
 use Symfony\Component\Console\Output\OutputInterface;
 use RB\Cli\Exceptions\ConnectException;
 use RB\Cli\Config;
 use RB\Cli\Models\FileQueueModel;
 use RB\Cli\Services\{FileService, Logger};
-use RB\DB\Builder\DB;
-use RB\DB\Connects\MySQLConnect;
 use RB\Transport\Exceptions\ConnectException as TransportConnectException;
 use RB\Transport\FtpClient;
 
@@ -77,6 +77,7 @@ class ListenQueue extends CommandAbstract
     /**
      * @param InputInterface $input
      * @throws ConnectException
+     * @throws DBConnectException
      */
     protected function createConnectDB(InputInterface $input): void
     {
@@ -97,17 +98,14 @@ class ListenQueue extends CommandAbstract
             throw new ConnectException('DB config not found');
         }
 
-        if ($config->get('queue.db.type') == 'mysql') {
-            $connect = new MySQLConnect(
-                $config->get('queue.db.host'),
-                $config->get('queue.db.dbname'),
-                $config->get('queue.db.user'),
-                $config->get('queue.db.password'),
-                $config->get('queue.db.port')
-            );
-        }
-
-        DB::setConnect($connect);
+        DBConnect::created($config->get('queue.db.type'), 'default', [
+            'host' => $config->get('queue.db.host'),
+            'dbName' => $config->get('queue.db.dbname'),
+            'user' => $config->get('queue.db.user'),
+            'password' => $config->get('queue.db.password'),
+            'port' => $config->get('queue.db.port'),
+            'path' => $config->get('queue.db.path'), // todo add config
+        ]);
     }
 
     /**
